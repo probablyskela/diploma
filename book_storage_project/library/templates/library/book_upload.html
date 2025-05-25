@@ -1,0 +1,31 @@
+{% extends "base_generic.html" %}
+
+{% block title %}Upload Book{% endblock %}
+
+{% block content %}
+  <h2>Upload New Book(s)</h2>
+  <form method="post" enctype="multipart/form-data" id="uploadForm">
+    {% csrf_token %}
+    {{ form.as_p }}
+    
+    <p>
+      <label for="id_book_files">Select book file(s):</label>
+      <input type="file" name="book_files" multiple required id="id_book_files">
+      <small>Select one or more PDF or EPUB files.</small>
+    </p>
+    
+    <button type="submit" id="uploadButton">Upload Book(s)</button>
+  </form>
+
+  <div id="loader" style="display: none; margin-top: 20px; padding: 10px; background-color: #f0f0f0; border: 1px solid #ddd;">
+    <p>Processing your book(s), please wait... This might take a moment.</p>
+    </div>
+
+  <script>
+    document.getElementById('uploadForm').addEventListener('submit', function() {
+      document.getElementById('loader').style.display = 'block';
+      document.getElementById('uploadButton').disabled = true;
+      document.getElementById('uploadButton').innerText = 'Processing...';
+    });
+  </script>
+{% endblock %} 

@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+
+{% block title %}Confirm Delete: {{ book.title }}{% endblock %}
+
+{% block content %}
+  <h2>Confirm Deletion</h2>
+  <p>Are you sure you want to delete the book "<strong>{{ book.title }}</strong>" (Original filename: <em>{{ book.original_filename }}</em>)?</p>
+  <p>This action will also remove the uploaded file from the server and cannot be undone.</p>
+
+  <form method="post" action="{% url 'library:delete_book' book_uuid=book.uuid %}">
+    {% csrf_token %}
+    <button type="submit" style="background-color: #dc3545; color: white;">Yes, Delete Permanently</button>
+    <a href="{% url 'library:book_list' %}" style="margin-left: 10px; display: inline-block; padding: 10px 15px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 3px;">Cancel</a>
+  </form>
+{% endblock %} 

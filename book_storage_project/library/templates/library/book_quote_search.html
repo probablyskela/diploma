@@ -1,0 +1,71 @@
+{% extends "base_generic.html" %}
+
+{% block title %}Search Book Quotes{% endblock %}
+
+{% block content %}
+  <h2>Search Book Quotes</h2>
+
+  <form method="post" action="{% url 'library:book_quote_search' %}" style="margin-bottom: 20px;">
+    {% csrf_token %}
+    
+    <div style="margin-bottom: 15px;">
+      {{ form.query.label_tag }}
+      {{ form.query }}
+      {% if form.query.errors %}
+        <div style="color: red; font-size: 0.9em; margin-top: 5px;">
+          {% for error in form.query.errors %}{{ error }}{% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    {% if form.tags.field.choices %}
+    <div style="margin-bottom: 15px;">
+      {{ form.tags.label_tag }}
+      <div style="margin-top: 5px;">
+        {% for choice_id, choice_label in form.tags.field.choices %}
+          <label for="{{ form.tags.auto_id }}_{{ forloop.counter0 }}" style="margin-right: 15px; display: inline-block;">
+            <input type="checkbox" name="{{ form.tags.html_name }}" value="{{ choice_id }}" id="{{ form.tags.auto_id }}_{{ forloop.counter0 }}" 
+                   {% if choice_id|stringformat:"s" in form.tags.value or choice_id in form.tags.value %}checked{% endif %}>
+            {{ choice_label }}
+          </label>
+        {% endfor %}
+      </div>
+      {% if form.tags.errors %}
+        <div style="color: red; font-size: 0.9em; margin-top: 5px;">
+          {% for error in form.tags.errors %}{{ error }}{% endfor %}
+        </div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <button type="submit" style="padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 3px;">Search Quotes</button>
+    
+  </form>
+
+  <hr>
+
+  {% if results %}
+    <h3>Search Results:</h3>
+    {% for item in results %}
+      <div class="quote-result" style="border: 1px solid #eee; padding: 15px; margin-bottom: 15px; background-color: #f9f9f9;">
+        <p style="font-style: italic;">"{{ item.text }}"</p>
+        <small>
+          From Book: 
+          <a href="{% url 'library:book_detail' book_uuid=item.book_uuid %}">{{ item.book_title }}</a>
+          {% if item.book_tags %}
+            (Tags:
+            {% for tag_name in item.book_tags %}
+              <span class="tag" style="background-color: #e0e0e0; padding: 2px 6px; border-radius: 3px; margin-right: 3px; font-size: 0.9em;">{{ tag_name }}</span>
+            {% endfor %})
+          {% endif %}
+          <br>UUID: {{ item.book_uuid }}
+        </small>
+      </div>
+    {% endfor %}
+  {% elif search_performed %}
+    <p>No quotes found matching your criteria.</p>
+  {% else %}
+    <p>Enter a query and/or select tags to search for quotes within your books.</p>
+  {% endif %}
+
+{% endblock %} 

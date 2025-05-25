@@ -1,0 +1,37 @@
+{% extends "base_generic.html" %}
+
+{% block title %}{{ book.title }} - Book Details{% endblock %}
+
+{% block content %}
+  <h2>{{ book.title }}</h2>
+  <hr>
+
+  <div style="margin-bottom: 20px;">
+    <p><strong>Original Filename:</strong> {{ book.original_filename }}</p>
+    <p><strong>Uploaded:</strong> {{ book.uploaded_at|date:"Y-m-d H:i:s" }}</p>
+    <p><strong>UUID:</strong> {{ book.uuid }}</p>
+    
+    <p><strong>Tags:</strong>
+      {% for tag in book.tags.all %}
+        <span class="tag" style="background-color: #e0e0e0; padding: 2px 6px; border-radius: 3px; margin-right: 3px; font-size: 0.9em;">{{ tag.name }}</span>
+      {% empty %}
+        No tags assigned.
+      {% endfor %}
+    </p>
+  </div>
+
+  <div class="actions" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+    <h4>Actions:</h4>
+    <a href="{% url 'library:rename_book' book_uuid=book.uuid %}" style="display: inline-block; margin-right: 10px; padding: 8px 12px; background-color: #007bff; color: white; text-decoration: none; border-radius: 3px;">Rename Book</a>
+    <a href="{% url 'library:download_book' book_uuid=book.uuid %}" style="display: inline-block; margin-right: 10px; padding: 8px 12px; background-color: #28a745; color: white; text-decoration: none; border-radius: 3px;">Download Book</a>
+    <a href="{% url 'library:delete_book' book_uuid=book.uuid %}" style="display: inline-block; padding: 8px 12px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 3px;">Delete Book</a>
+  </div>
+
+  <div style="margin-top: 30px;">
+    <a href="{% url 'library:book_list' %}">&laquo; Back to My Books</a>
+    <span style="margin: 0 10px;">|</span>
+    <a href="{% url 'library:book_quote_search' %}">Search Quotes &raquo;</a>
+
+  </div>
+
+{% endblock %} 

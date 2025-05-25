@@ -1,0 +1,4 @@
+{
+    "num_chunks": 10,
+    "tokens_per_chunk": 500
+}

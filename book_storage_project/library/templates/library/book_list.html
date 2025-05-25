@@ -1,0 +1,77 @@
+{% extends "base_generic.html" %}
+
+{% block title %}My Books{% endblock %}
+
+{% block content %}
+  <h2>My Books</h2>
+  
+  <p><a href="{% url 'library:upload_book' %}" class="btn btn-primary" style="margin-bottom: 20px; display: inline-block; padding: 10px 15px; background-color: #5cb85c; color: white; text-decoration: none; border-radius: 3px;">Upload New Book</a></p>
+
+  <form method="get" action="{% url 'library:book_list' %}" id="filterForm" style="margin-bottom: 20px;">
+
+    <h4>Filter by Tags:</h4>
+    <div style="margin-bottom: 10px;">
+        {% for tag in all_tags %}
+            <label style="margin-right: 15px; display: inline-block;">
+                <input type="checkbox" name="tags" value="{{ tag.id }}" class="auto-submit-filter" 
+                       {% if tag.id|stringformat:"s" in selected_tag_ids %}checked{% endif %}>
+                {{ tag.name }} ({{tag.id}})
+            </label>
+        {% empty %}
+            <p>No tags available for filtering.</p>
+        {% endfor %}
+    </div>
+    <a href="{% url 'library:book_list' %}" style="padding: 8px 15px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 3px;">Clear Filters</a>
+  </form>
+
+  {% if books %}
+    <table style="width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr style="background-color: #f0f0f0;">
+          <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Title</th>
+          <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Uploaded Date</th>
+          <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Tags</th>
+          <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for book in books %}
+          <tr>
+            <td style="border: 1px solid #ddd; padding: 8px;">
+              <a href="{% url 'library:book_detail' book_uuid=book.uuid %}" style="color: inherit;">{{ book.title }}</a>
+            </td>
+            <td style="border: 1px solid #ddd; padding: 8px;">{{ book.uploaded_at|date:"Y-m-d H:i" }}</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">
+              {% for tag in book.tags.all %}
+                <span class="tag" style="background-color: #e0e0e0; padding: 2px 6px; border-radius: 3px; margin-right: 3px; font-size: 0.9em;">{{ tag.name }}</span>
+              {% empty %}
+                No tags
+              {% endfor %}
+            </td>
+            <td style="border: 1px solid #ddd; padding: 8px;">
+              <a href="{% url 'library:rename_book' book_uuid=book.uuid %}" style="margin-right: 5px; color: #007bff; text-decoration: none;">Rename</a>
+              <a href="{% url 'library:delete_book' book_uuid=book.uuid %}" style="margin-right: 5px; color: #dc3545; text-decoration: none;">Delete</a>
+              <a href="{% url 'library:download_book' book_uuid=book.uuid %}" style="color: #28a745; text-decoration: none;">Download</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>You haven't uploaded any books yet.</p>
+  {% endif %}
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterForm = document.getElementById('filterForm');
+        const filterCheckboxes = filterForm.querySelectorAll('input[type="checkbox"].auto-submit-filter');
+
+        filterCheckboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                filterForm.submit(); 
+            });
+        });
+    });
+  </script>
+
+{% endblock %} 
