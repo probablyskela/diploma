@@ -13,12 +13,14 @@ def get_book_quotes_collection():
     from chromadb.utils import embedding_functions
 
     chroma_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
-        model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+        model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        normalize_embeddings=False,
     )
 
     collection = client.get_or_create_collection(
         name="book_quotes_multilingual",
         embedding_function=chroma_ef,
+        metadata={"hnsw:space": "cosine"},
     )
     return collection
 
