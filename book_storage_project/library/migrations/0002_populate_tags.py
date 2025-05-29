@@ -19,16 +19,6 @@ TAG_DATA = {
         "name": "Language and Literature",
         "description": "P – Language and Literature",
     },
-    "PR": {
-        "name": "English Literature",
-        "parent_id": "P",
-        "description": "PR – English Literature (parent: P)",
-    },
-    "PS": {
-        "name": "American Literature",
-        "parent_id": "P",
-        "description": "PS – American Literature (parent: P)",
-    },
     "PZ": {
         "name": "Fiction",
         "parent_id": "P",
